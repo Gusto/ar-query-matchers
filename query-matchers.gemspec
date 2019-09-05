@@ -6,7 +6,7 @@ require 'ar_query_matchers/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'ar-query-matchers'
-  spec.version       = ArQueryMatchers::VERSION
+  spec.version       = File.read(File.join(File.dirname(__FILE__), './VERSION'))
   spec.authors       = ['Matan Zruya']
   spec.email         = ['mzruya@gmail.com']
 
