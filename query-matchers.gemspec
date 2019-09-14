@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   if spec.respond_to?(:metadata)
     spec.metadata['homepage_uri'] = spec.homepage
     spec.metadata['source_code_uri'] = spec.homepage
-    spec.metadata['changelog_uri'] = spec.homepage
+    spec.metadata['changelog_uri'] = "#{spec.homepage}/blob/master/CHANGELOG.md"
   else
     raise 'RubyGems 2.0 or newer is required to protect against ' \
       'public gem pushes.'
