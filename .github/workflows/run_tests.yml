@@ -7,11 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [2.4.x, 2.5.x, 2.6.x]
+        ruby: [2.5.x, 2.6.x]
         appraisal: ["rails-4", "rails-5", "rails-6"]
-        exclude:
-          - ruby: 2.4.x
-            appraisal: rails-6
     steps:
     - uses: actions/checkout@v1
     - name: Setup System

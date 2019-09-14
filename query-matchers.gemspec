@@ -15,13 +15,11 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/Gusto/ar-query-matchers'
   spec.license       = 'MIT'
 
-  if spec.respond_to?(:metadata)
-    spec.metadata['homepage_uri'] = spec.homepage
-    spec.metadata['source_code_uri'] = spec.homepage
-    spec.metadata['changelog_uri'] = "#{spec.homepage}/blob/master/CHANGELOG.md"
-  else
-    raise 'RubyGems 2.0 or newer is required to protect against public gem pushes.'
-  end
+  raise 'RubyGems 2.0 or newer is required to protect against public gem pushes.' unless spec.respond_to?(:metadata)
+
+  spec.metadata['homepage_uri'] = spec.homepage
+  spec.metadata['source_code_uri'] = spec.homepage
+  spec.metadata['changelog_uri'] = "#{spec.homepage}/blob/master/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
