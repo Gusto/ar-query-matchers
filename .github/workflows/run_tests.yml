@@ -4,18 +4,19 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        ruby: [2.4.x, 2.5.x, 2.6.x]
     steps:
     - uses: actions/checkout@v1
     - name: Setup System
       run: |
         sudo apt-get install libsqlite3-dev
-    - name: Set up Ruby 2.6
+    - name: Set up Ruby ${{ matrix.ruby }}
       uses: actions/setup-ruby@v1
       with:
-        ruby-version: 2.6.x
+        ruby-version: ${{ matrix.ruby }}
     - name: Build and test with Rake
       run: |
         gem install bundler
