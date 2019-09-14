@@ -22,11 +22,11 @@ Start using it:
 require 'ar-query-matchers'
 
 RSpec.describe Employee do
- it 'creating an employee creates exactly one record' do
-  expect { 
-    Employee.create!(first_name: 'John', last_name: 'Doe') 
-  }.to only_create_models('Employee' => '1')
- end
+  it 'creating an employee creates exactly one record' do
+    expect { 
+      Employee.create!(first_name: 'John', last_name: 'Doe') 
+    }.to only_create_models('Employee' => '1')
+  end
 end
 ```
 
