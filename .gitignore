@@ -10,4 +10,5 @@
 
 # rspec failure tracking
 .rspec_status
-*.lock
+Gemfile.lock
+/gemfiles
