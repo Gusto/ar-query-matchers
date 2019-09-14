@@ -8,6 +8,10 @@ jobs:
     strategy:
       matrix:
         ruby: [2.4.x, 2.5.x, 2.6.x]
+        appraisal: ["rails-4", "rails-5", "rails-6"]
+        exclude:
+          - ruby: 2.4.x
+            appraisal: rails-6
     steps:
     - uses: actions/checkout@v1
     - name: Setup System
@@ -22,4 +26,4 @@ jobs:
         gem install bundler
         bundle install --jobs 4 --retry 3
         bundle exec appraisal install
-        bundle exec rubocop && bundle exec appraisal spec
+        bundle exec appraisal ${{ matrix.appraisal }} rake
