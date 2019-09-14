@@ -11,7 +11,7 @@ RSpec.describe ArQueryMatchers::Queries::CreateCounter do
   it 'does not include reads or creates' do
     user = MockUser.create!
     stats = described_class.instrument do
-      user.update_attributes!(name: 'new name')
+      user.update!(name: 'new name')
       MockUser.last
     end
 
