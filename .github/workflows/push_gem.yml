@@ -1,12 +1,9 @@
 name: Push Gem
 
 on:
-  pull_request:
-    branches:
-      - master
   push:
     branches:
-      - master
+      - release/*
 
 jobs:
   build:
