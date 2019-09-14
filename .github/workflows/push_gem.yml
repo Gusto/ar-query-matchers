@@ -3,7 +3,9 @@ name: Push Gem
 on:
   push:
     branches:
-      - release/*
+      - master
+    tags:
+      - v*
 
 jobs:
   build:
