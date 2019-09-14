@@ -23,9 +23,9 @@ RSpec.describe ArQueryMatchers::Queries::UpdateCounter do
     post = MockPost.create!(mock_user: user_1)
 
     stats = described_class.instrument do
-      user_1.update_attributes!(name: 'name 1')
-      user_1.update_attributes!(name: 'name 2')
-      post.update_attributes!(mock_user: user_2)
+      user_1.update!(name: 'name 1')
+      user_1.update!(name: 'name 2')
+      post.update!(mock_user: user_2)
     end
 
     expect(stats.query_counts).to eq('MockUser' => 2, 'MockPost' => 1)

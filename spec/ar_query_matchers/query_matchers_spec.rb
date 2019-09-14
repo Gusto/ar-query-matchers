@@ -19,7 +19,7 @@ RSpec.describe ArQueryMatchers do
   end
 
   def updates(amount)
-    amount.times.each { |i| record.update_attributes!(name: "name #{i}") }
+    amount.times.each { |i| record.update!(name: "name #{i}") }
   end
 
   describe 'not_load_any_models' do

@@ -11,7 +11,7 @@ RSpec.describe ArQueryMatchers::Queries::LoadCounter do
   it 'does not include creates or updates' do
     stats = described_class.instrument do
       user = MockUser.create!
-      user.update_attributes!(name: 'a name')
+      user.update!(name: 'a name')
     end
 
     expect(stats.query_counts).to be_empty
