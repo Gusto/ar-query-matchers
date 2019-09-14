@@ -2,13 +2,35 @@
 ![badge](https://action-badges.now.sh/gusto/ar-query-matchers?action=Run%20Tests)
 
 These RSpec matchers allows guarding against N+1 queries by specifying
-exactly how many queries we expect each of our models to perform.
+exactly how many queries you expect each of your ActiveRecord models to perform.
 
 They also help us reason about the type of record interactions happening in a block of code.
 
 This pattern is a based on how Rails itself tests queries:
 https://github.com/rails/rails/blob/ac2bc00482c1cf47a57477edb6ab1426a3ba593c/activerecord/test/cases/test_case.rb#L104-L141
 
+### Usage
+Include it in your Gemfile:
+```ruby
+group :test do
+  gem 'ar-query-matchers', '~> 0.1.0', require: false
+end
+```
+
+Start using it: 
+```ruby
+require 'ar-query-matchers'
+
+RSpec.describe Employee do
+ it 'creating an employee creates exactly one record' do
+  expect { 
+    Employee.create!(first_name: 'John', last_name: 'Doe') 
+  }.to only_create_models('Employee' => '1')
+ end
+end
+```
+
+### Matchers
 This module defines a few categories of matchers:
 - **Create**: Which models are created during a block
 - **Load**: Which models are fetched during a block
