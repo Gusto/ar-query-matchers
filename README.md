@@ -31,7 +31,6 @@ end
 ```
 
 ### Matchers
-
 This module defines a few categories of matchers:
 - **Create**: Which models are created during a block
 - **Load**: Which models are fetched during a block
