@@ -1,5 +1,5 @@
 ## AR Query Matchers
-![badge](https://action-badges.now.sh/Gusto/ar-query-matchers)
+![badge](https://action-badges.now.sh/gusto/ar-query-matchers?action=Run%20Tests)
 
 These RSpec matchers allows guarding against N+1 queries by specifying
 exactly how many queries we expect each of our models to perform.
