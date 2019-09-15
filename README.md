@@ -55,7 +55,7 @@ expect { some_code() }.to only_load_models(
 )
 ```
 
-The following spec will pass only if there are exactly no select queries.
+The following spec will pass only if there are no select queries.
 ```ruby
 expect { some_code() }.to not_load_models
 ```
