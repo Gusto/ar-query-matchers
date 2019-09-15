@@ -2,7 +2,7 @@
 ![badge](https://action-badges.now.sh/gusto/ar-query-matchers?action=Run%20Tests)
 
 These RSpec matchers allows guarding against N+1 queries by specifying
-exactly how many queries you expect each of your ActiveRecord models to perform.
+exactly how many queries you expect each of your ActiveRecord models perform.
 
 They also help us reason about the type of record interactions happening in a block of code.
 
