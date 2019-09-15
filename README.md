@@ -1,10 +1,10 @@
 ## AR Query Matchers
 ![badge](https://action-badges.now.sh/gusto/ar-query-matchers?action=Run%20Tests)
 
-These RSpec matchers allows guarding against N+1 queries by specifying
-exactly how many queries you expect each of your ActiveRecord models perform.
+These RSpec matchers allow guarding against N+1 queries by specifying
+exactly how many queries you expect each of your ActiveRecord models to perform.
 
-They also help us reason about the type of record interactions happening in a block of code.
+They could also help reasoning about which database interactions are happening inside a block of code.
 
 This pattern is a based on how Rails itself tests queries:
 https://github.com/rails/rails/blob/ac2bc00482c1cf47a57477edb6ab1426a3ba593c/activerecord/test/cases/test_case.rb#L104-L141
@@ -31,7 +31,7 @@ end
 ```
 
 ### Matchers
-This module defines a few categories of matchers:
+This gem defines a few categories of matchers:
 - **Create**: Which models are created during a block
 - **Load**: Which models are fetched during a block
 - **Update**: Which models are updated during a block
@@ -84,11 +84,9 @@ Expected to run queries to load models exactly {"Address"=>1, "Payroll"=>1, "Use
 ```
 
 ### High Level Design:
-The RSpec matcher delegates to the query counters, asserts expectations and formats error messages to provide meaningful failures.  
- 
- 
+The RSpec matcher delegates to "query counters", asserts expectations and formats error messages to provide meaningful failures.  
 The matchers are pretty simple, and delegate instrumentation into specialized QueryCounter classes.
-The QueryCounters are different classes instruments a ruby block by listening on all sql, parsing the queries and returning structured data describing the interactions.
+The QueryCounters are different classes which instrument a ruby block by listening on all sql, parsing the queries and returning structured data describing the interactions.
 
 ```                
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
