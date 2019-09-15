@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['mzruya@gmail.com']
 
   spec.summary       = 'Ruby test matchers for instrumenting ActiveRecord query counts'
-  spec.description   = 'These RSpec matchers allows guarding against N+1 queries by specifying exactly how many queries you expect each of your ActiveRecord models to perform.'
+  spec.description   = 'These RSpec matchers allows guarding against N+1 queries by specifying exactly how many queries you expect each of your ActiveRecord models perform.'
   spec.homepage      = 'https://github.com/Gusto/ar-query-matchers'
   spec.license       = 'MIT'
 
