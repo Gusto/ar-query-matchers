@@ -10,6 +10,7 @@ This pattern is a based on how Rails itself tests queries:
 https://github.com/rails/rails/blob/ac2bc00482c1cf47a57477edb6ab1426a3ba593c/activerecord/test/cases/test_case.rb#L104-L141
 
 Currently, this gem only supports RSpec matchers, but the code is meant to be adapted to support other testing frameworks.
+If you'd like to pick that up, please have a look at: https://github.com/Gusto/ar-query-matchers/issues/13
 
 ### Usage
 Include it in your Gemfile:
