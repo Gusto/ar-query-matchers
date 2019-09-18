@@ -16,7 +16,7 @@ If you'd like to pick that up, please have a look at: https://github.com/Gusto/a
 Include it in your Gemfile:
 ```ruby
 group :test do
-  gem 'ar-query-matchers', '~> 0.1.0', require: false
+  gem 'ar-query-matchers', '~> 0.2.0', require: false
 end
 ```
 
