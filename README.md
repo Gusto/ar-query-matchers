@@ -20,14 +20,14 @@ group :test do
 end
 ```
 
-Start using it: 
+Start using it:
 ```ruby
-require 'ar-query-matchers'
+require 'ar_query_matchers'
 
 RSpec.describe Employee do
   it 'creating an employee creates exactly one record' do
-    expect { 
-      Employee.create!(first_name: 'John', last_name: 'Doe') 
+    expect {
+      Employee.create!(first_name: 'John', last_name: 'Doe')
     }.to only_create_models('Employee' => '1')
   end
 end
@@ -45,7 +45,7 @@ Each matcher category includes 3 assertions, for example, for the Load category,
 - **load_models**: Inclusion, other models are allowed to be loaded if not specified in the assertion.
 
 
-**For example:** 
+**For example:**
 
 The following spec will pass only if there are exactly 4 SQL SELECTs that
 load User records (and 1 for Address, 1 for Payroll) _and_ no other models
@@ -87,11 +87,11 @@ Expected to run queries to load models exactly {"Address"=>1, "Payroll"=>1, "Use
 ```
 
 ### High Level Design:
-The RSpec matcher delegates to "query counters", asserts expectations and formats error messages to provide meaningful failures.  
+The RSpec matcher delegates to "query counters", asserts expectations and formats error messages to provide meaningful failures.
 The matchers are pretty simple, and delegate instrumentation into specialized QueryCounter classes.
 The QueryCounters are different classes which instrument a ruby block by listening on all sql, parsing the queries and returning structured data describing the interactions.
 
-```                
+```
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
 ┌─┤expect { Employee.create!() }.to only_create_models('Employee' => 1)                    │
 │ └────────────────────────────────────────────────────────────────────────────────────────┘
@@ -100,7 +100,7 @@ The QueryCounters are different classes which instrument a ruby block by listeni
 │ └────────────────────────────────────────────────────────────────────────────────────────┘
 └▶┌────────────────────────────────────────────────────────────────────────────────────────┐
   │QueryCounter.new(CreateQueryFilter.new).instrument { Employee.create!() } => QueryStats │
-  └────────────────────────────────────────────────────────────────────────────────────────┘                                                                
+  └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 For more information, see:
