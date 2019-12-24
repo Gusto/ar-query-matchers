@@ -22,7 +22,7 @@ end
 
 Start using it: 
 ```ruby
-require 'ar-query-matchers'
+require 'ar_query_matchers'
 
 RSpec.describe Employee do
   it 'creating an employee creates exactly one record' do
