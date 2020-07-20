@@ -13,7 +13,13 @@ appraise 'rails-5' do
 end
 
 appraise 'rails-6' do
-  gem 'activerecord',  '~> 6.1'
-  gem 'activesupport', '~> 6.1'
+  gem 'activerecord',  '~> 6.0'
+  gem 'activesupport', '~> 6.0'
+  gem 'sqlite3', '~> 1.4'
+end
+
+appraise 'rails-edge' do 
+  gem 'activerecord',  git: 'https://github.com/rails/rails.git'
+  gem 'activesupport', git: 'https://github.com/rails/rails.git'
   gem 'sqlite3', '~> 1.4'
 end
