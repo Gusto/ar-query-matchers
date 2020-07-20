@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.3.1] - 2020-07-20
+## [0.4.0] - 2020-07-20
 ### Changed
 - Upgrade the Rails dependency to allow for Rails 6.1
 
