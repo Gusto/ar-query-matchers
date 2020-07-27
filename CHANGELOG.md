@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2020-07-23
+### Changed
+- Add time information to query counter
+
 ## [0.4.0] - 2020-07-20
 ### Changed
 - Upgrade the Rails dependency to allow for Rails 6.1
@@ -23,7 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First versions as a public ruby gem.
 
-[Unreleased]: https://github.com/gusto/ar-query-matchers/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/gusto/ar-query-matchers/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/gusto/ar-query-matchers/releases/tag/v0.5.0
 [0.4.0]: https://github.com/gusto/ar-query-matchers/releases/tag/v0.4.0
 [0.3.0]: https://github.com/gusto/ar-query-matchers/releases/tag/v0.3.0
 [0.2.0]: https://github.com/gusto/ar-query-matchers/releases/tag/v0.2.0

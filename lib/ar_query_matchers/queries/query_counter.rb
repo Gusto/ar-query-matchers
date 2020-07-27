@@ -62,7 +62,7 @@ module ArQueryMatchers
       # @param [block] block to instrument
       # @return [QueryStats] stats about all the SQL queries executed during the block
       def instrument(&block)
-        queries = Hash.new { |h, k| h[k] = { count: 0, lines: [] } }
+        queries = Hash.new { |h, k| h[k] = { count: 0, lines: [], time: BigDecimal(0) } }
         ActiveSupport::Notifications.subscribed(to_proc(queries), 'sql.active_record', &block)
         QueryStats.new(queries)
       end
@@ -75,7 +75,7 @@ module ArQueryMatchers
       private_constant :MARGINALIA_SQL_COMMENT_PATTERN
 
       def to_proc(queries)
-        lambda do |_name, _start, _finish, _message_id, payload|
+        lambda do |_name, start, finish, _message_id, payload|
           return if payload[:cached]
 
           # Given a `sql.active_record` event, figure out which model is being
@@ -87,6 +87,7 @@ module ArQueryMatchers
             comment = payload[:sql].match(MARGINALIA_SQL_COMMENT_PATTERN)
             queries[model_name][:lines] << comment[:line] if comment
             queries[model_name][:count] += 1
+            queries[model_name][:time] += (finish - start).round(6) # Round to microseconds
           end
         end
       end

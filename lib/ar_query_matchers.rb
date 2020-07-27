@@ -3,6 +3,7 @@
 require 'ar_query_matchers/queries/create_counter'
 require 'ar_query_matchers/queries/load_counter'
 require 'ar_query_matchers/queries/update_counter'
+require 'bigdecimal'
 
 module ArQueryMatchers
   module ArQueryMatchers
