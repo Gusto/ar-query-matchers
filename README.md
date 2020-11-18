@@ -109,6 +109,16 @@ For more information, see:
 3. `ArQueryMatchers::Queries::LoadCounter`
 4. `ArQueryMatchers::Queries::UpdateCounter`
 
+### Gotchas
+- Do not set an expectation of a count of zero, simply leave off the model for which there should be no queries executed against. Doing so will result in a empty block with a test failure as seen below. 
+```
+Expectations that differed:
+
+
+Where unexpected queries came from:
+...stack trace...
+```
+
 ### Known problems
 - The Rails 4 `ActiveRecord::Base#pluck` method doesn't issue a
 `Load` or `Exists` named query and therefore we don't capture the counts with
