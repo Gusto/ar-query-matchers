@@ -145,7 +145,7 @@ RSpec.describe ArQueryMatchers do
         updates(1)
         loads(5)
         creates(1)
-      end.to only_load_models({'MockUser' => 5})
+      end.to only_load_models({ 'MockUser' => 5 })
     end
 
     it 'succeeds after cleaning the 0 count expectation' do
