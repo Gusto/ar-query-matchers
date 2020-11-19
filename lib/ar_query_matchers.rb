@@ -8,16 +8,8 @@ require 'bigdecimal'
 module ArQueryMatchers
   module ArQueryMatchers
     class Utility
-      def self.clean_expected(expected)
-        expected_cleaned = expected.select { |k,v| v > 0 }
-
-        # On the fence about whether or not to include a warning message. Folks writing tests should be aware that they
-        #   should remove the 0 count expectations to keep the tests clean. Problem is it makes the output for this test
-        #   suite noisy. I could go either way on this
-        # amount_cleaned = expected.size - expected_cleaned.size
-        # puts "Removed #{amount_cleaned} 0 count expectation(s), please remove from your test to hide this message" if amount_cleaned > 0
-
-        expected_cleaned
+      def self.remove_superfluous_expectations(expected)
+        expected.select { |k,v| v > 0 }
       end
     end
 
@@ -37,7 +29,7 @@ module ArQueryMatchers
 
         match do |block|
           @query_stats = Queries::CreateCounter.instrument(&block)
-          Utility.clean_expected(expected) == @query_stats.query_counts
+          Utility.remove_superfluous_expectations(expected) == @query_stats.query_counts
         end
 
         def failure_text
@@ -97,7 +89,7 @@ module ArQueryMatchers
 
         match do |block|
           @query_stats = Queries::LoadCounter.instrument(&block)
-          Utility.clean_expected(expected) == @query_stats.query_counts
+          Utility.remove_superfluous_expectations(expected) == @query_stats.query_counts
         end
 
         def failure_text
@@ -161,7 +153,7 @@ module ArQueryMatchers
 
         match do |block|
           @query_stats = Queries::UpdateCounter.instrument(&block)
-          Utility.clean_expected(expected) == @query_stats.query_counts
+          Utility.remove_superfluous_expectations(expected) == @query_stats.query_counts
         end
 
         def failure_text
