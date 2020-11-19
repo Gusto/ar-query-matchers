@@ -9,7 +9,7 @@ module ArQueryMatchers
   module ArQueryMatchers
     class Utility
       def self.remove_superfluous_expectations(expected)
-        expected.select { |k,v| v > 0 }
+        expected.select { |_, v| v.positive? }
       end
     end
 
