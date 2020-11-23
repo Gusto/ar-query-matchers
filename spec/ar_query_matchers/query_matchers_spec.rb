@@ -90,6 +90,14 @@ RSpec.describe ArQueryMatchers do
       end.to only_update_models('MockUser' => 5)
     end
 
+    it 'succeeds after cleaning the 0 count expectation' do
+      expect do
+        updates(5)
+        loads(1)
+        creates(1)
+      end.to only_update_models({ 'MockPost' => 0, 'MockUser' => 5 })
+    end
+
     it 'fails' do
       expect do
         expect do
@@ -111,6 +119,14 @@ RSpec.describe ArQueryMatchers do
       end.to only_create_models('MockUser' => 5)
     end
 
+    it 'succeeds after cleaning the 0 count expectation' do
+      expect do
+        updates(1)
+        loads(1)
+        creates(5)
+      end.to only_create_models({ 'MockPost' => 0, 'MockUser' => 5 })
+    end
+
     it 'fails' do
       expect do
         expect do
@@ -129,7 +145,15 @@ RSpec.describe ArQueryMatchers do
         updates(1)
         loads(5)
         creates(1)
-      end.to only_load_models('MockUser' => 5)
+      end.to only_load_models({ 'MockUser' => 5 })
+    end
+
+    it 'succeeds after cleaning the 0 count expectation' do
+      expect do
+        updates(1)
+        loads(5)
+        creates(1)
+      end.to only_load_models({ 'MockPost' => 0, 'MockUser' => 5 })
     end
 
     it 'fails' do

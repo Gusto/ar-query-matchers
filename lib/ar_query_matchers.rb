@@ -7,6 +7,12 @@ require 'bigdecimal'
 
 module ArQueryMatchers
   module ArQueryMatchers
+    class Utility
+      def self.remove_superfluous_expectations(expected)
+        expected.select { |_, v| v.positive? }
+      end
+    end
+
     module CreateModels
       # The following will succeed:
       #    expect {
@@ -23,7 +29,7 @@ module ArQueryMatchers
 
         match do |block|
           @query_stats = Queries::CreateCounter.instrument(&block)
-          expected == @query_stats.query_counts
+          Utility.remove_superfluous_expectations(expected) == @query_stats.query_counts
         end
 
         def failure_text
@@ -83,7 +89,7 @@ module ArQueryMatchers
 
         match do |block|
           @query_stats = Queries::LoadCounter.instrument(&block)
-          expected == @query_stats.query_counts
+          Utility.remove_superfluous_expectations(expected) == @query_stats.query_counts
         end
 
         def failure_text
@@ -147,7 +153,7 @@ module ArQueryMatchers
 
         match do |block|
           @query_stats = Queries::UpdateCounter.instrument(&block)
-          expected == @query_stats.query_counts
+          Utility.remove_superfluous_expectations(expected) == @query_stats.query_counts
         end
 
         def failure_text

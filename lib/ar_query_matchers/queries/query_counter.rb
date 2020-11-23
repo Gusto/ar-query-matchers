@@ -79,7 +79,7 @@ module ArQueryMatchers
           return if payload[:cached]
 
           # Given a `sql.active_record` event, figure out which model is being
-          # accessed. Some of the simpler queries have a :ame key that makes this
+          # accessed. Some of the simpler queries have a :name key that makes this
           # really easy. Others require parsing the SQL by hand.
           model_name = @query_filter.filter_map(payload[:name] || '', payload[:sql] || '')&.model_name
 
