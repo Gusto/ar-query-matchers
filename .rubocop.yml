@@ -2,3 +2,18 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   Exclude:
     - 'gemfiles/**/*'
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Lint/MixedRegexpCaptureTypes:
+  Enabled: false
+
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
+Lint/ConstantDefinitionInBlock:
+  Enabled: false
