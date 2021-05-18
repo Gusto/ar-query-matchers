@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.2] - 2021-05-18
+### Changed
+- Removes 'SELECT' from MODEL_SQL_PATTERN to allow for more granular SQL statement matching
+
 ## [0.5.1] - 2020-11-19
 ### Changed
 - Removes zero count expectations from hash before comparing
