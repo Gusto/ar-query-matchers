@@ -23,7 +23,7 @@ module ArQueryMatchers
           # for inserts, name is always 'SQL', we have to rely on pattern matching the query string.
           select_from_table = sql.match(TABLE_NAME_SQL_PATTERN)
 
-          TableName.new(select_from_table[:table_name]) if select_from_table
+          [TableName.new(select_from_table[:table_name])] if select_from_table
         end
       end
     end

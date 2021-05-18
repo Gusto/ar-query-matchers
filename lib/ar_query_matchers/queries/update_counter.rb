@@ -22,7 +22,7 @@ module ArQueryMatchers
         def filter_map(_name, sql)
           # for updates, name is always 'SQL', we have to rely on pattern matching on the query string instead.
           select_from_table = sql.match(TABLE_NAME_SQL_PATTERN)
-          TableName.new(select_from_table[:table_name]) if select_from_table
+          [TableName.new(select_from_table[:table_name])] if select_from_table
         end
       end
     end
