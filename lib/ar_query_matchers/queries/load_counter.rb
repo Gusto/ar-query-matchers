@@ -27,12 +27,14 @@ module ArQueryMatchers
           # First check for a `SELECT * FROM` query that ActiveRecord has
           # helpfully named for us in the payload
           match = name.match(MODEL_LOAD_PATTERN)
-          return ModelName.new(match[:model_name]) if match
+          return [ModelName.new(match[:model_name])] if match
 
           # Fall back to pattern-matching on the table name in a COUNT and looking
           # up the table name from ActiveRecord's loaded descendants.
-          select_from_table = sql.match(MODEL_SQL_PATTERN)
-          TableName.new(select_from_table[:table_name]) if select_from_table
+          selects_from_table = sql.scan(MODEL_SQL_PATTERN)
+          if !selects_from_table.empty?
+            selects_from_table.map { |(table_name)| TableName.new(table_name) }
+          end
         end
       end
     end
