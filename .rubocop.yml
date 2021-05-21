@@ -9,6 +9,9 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Enabled: false
 
+Metrics/MethodLength:
+  Enabled: false
+
 Lint/MixedRegexpCaptureTypes:
   Enabled: false
 
