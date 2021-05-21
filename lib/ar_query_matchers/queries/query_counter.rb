@@ -83,16 +83,15 @@ module ArQueryMatchers
           # really easy. Others require parsing the SQL by hand.
           results = @query_filter.filter_map(payload[:name] || '', payload[:sql] || '')
 
-          if results
-            results.each do |result|
-              model_name = result.model_name
-              next if !model_name
+          # Round to microseconds
+          results&.each do |result|
+            model_name = result.model_name
+            next unless model_name
 
-              comment = payload[:sql].match(MARGINALIA_SQL_COMMENT_PATTERN)
-              queries[model_name][:lines] << comment[:line] if comment
-              queries[model_name][:count] += 1
-              queries[model_name][:time] += (finish - start).round(6) # Round to microseconds
-            end
+            comment = payload[:sql].match(MARGINALIA_SQL_COMMENT_PATTERN)
+            queries[model_name][:lines] << comment[:line] if comment
+            queries[model_name][:count] += 1
+            queries[model_name][:time] += (finish - start).round(6) # Round to microseconds
           end
         end
       end

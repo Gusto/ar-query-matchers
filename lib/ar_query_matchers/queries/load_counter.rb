@@ -23,9 +23,7 @@ module ArQueryMatchers
           # Pattern-matching on the table name in a SELECT ... FROM and looking
           # up the table name from ActiveRecord's loaded descendants.
           selects_from_table = sql.scan(MODEL_SQL_PATTERN)
-          if !selects_from_table.empty?
-            selects_from_table.map { |(table_name)| TableName.new(table_name) }
-          end
+          selects_from_table.map { |(table_name)| TableName.new(table_name) } unless selects_from_table.empty?
         end
       end
     end
