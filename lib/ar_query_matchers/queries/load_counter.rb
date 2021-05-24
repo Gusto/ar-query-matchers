@@ -23,11 +23,14 @@ module ArQueryMatchers
         # "SELECT COUNT(*) FROM `users` ..."
         MODEL_SQL_PATTERN = /FROM [`"](?<table_name>[^`"]+)[`"]/.freeze
 
-        def filter_map(name, sql)
+        def filter_map(_name, sql)
           # First check for a `SELECT * FROM` query that ActiveRecord has
           # helpfully named for us in the payload
-          match = name.match(MODEL_LOAD_PATTERN)
-          return [ModelName.new(match[:model_name])] if match
+          #
+          # NOTE: This misses possible subqueries and prevents us from getting
+          # to the below matcher
+          # match = name.match(MODEL_LOAD_PATTERN)
+          # return [ModelName.new(match[:model_name])] if match
 
           # Fall back to pattern-matching on the table name in a COUNT and looking
           # up the table name from ActiveRecord's loaded descendants.
