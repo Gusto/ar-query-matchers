@@ -2,7 +2,6 @@
 
 require_relative './query_counter'
 require_relative './table_name'
-require_relative './model_name'
 require_relative './query_filter'
 
 module ArQueryMatchers
