@@ -77,4 +77,15 @@ RSpec.describe ArQueryMatchers::Queries::LoadCounter do
 
     expect(stats.query_counts).to eq('MockUser' => 1, 'MockPost' => 1)
   end
+
+  it 'returns the correct result when there are subqueries' do
+    user = MockUser.create!(name: 'Daniel')
+    MockPost.create!(mock_user: user)
+
+    stats = described_class.instrument do
+      MockPost.where(mock_user: MockUser.where(name: 'Daniel')).count
+    end
+
+    expect(stats.query_counts).to eq('MockPost' => 1)
+  end
 end

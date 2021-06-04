@@ -21,7 +21,7 @@ module ArQueryMatchers
 
         # Matches unnamed SQL operations like the following:
         # "SELECT COUNT(*) FROM `users` ..."
-        MODEL_SQL_PATTERN = /SELECT .* FROM [`"](?<table_name>[^`"]+)[`"]/.freeze
+        MODEL_SQL_PATTERN = /SELECT (?:(?!SELECT).)* FROM [`"](?<table_name>[^`"]+)[`"]/.freeze
 
         def filter_map(name, sql)
           # First check for a `SELECT * FROM` query that ActiveRecord has
