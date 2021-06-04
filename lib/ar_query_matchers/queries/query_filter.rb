@@ -11,7 +11,7 @@ module ArQueryMatchers
       # @param _sql [String] the sql query that was executed
       # For example: "SELECT  `users`.* FROM `users` .."
       #
-      # @return nil or an instance which responds to #model_name (see TableName)
+      # @return nil or an instance which responds to #model_name (see TableName or ModelName)
       # By returning nil we omit the query
       # By not returning nil, we are associating this query with a model_name.
       def filter_map(_name, _sql)

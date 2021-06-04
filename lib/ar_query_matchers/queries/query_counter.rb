@@ -81,13 +81,9 @@ module ArQueryMatchers
           # Given a `sql.active_record` event, figure out which model is being
           # accessed. Some of the simpler queries have a :name key that makes this
           # really easy. Others require parsing the SQL by hand.
-          results = @query_filter.filter_map(payload[:name] || '', payload[:sql] || '')
+          model_name = @query_filter.filter_map(payload[:name] || '', payload[:sql] || '')&.model_name
 
-          # Round to microseconds
-          results&.each do |result|
-            model_name = result.model_name
-            next unless model_name
-
+          if model_name
             comment = payload[:sql].match(MARGINALIA_SQL_COMMENT_PATTERN)
             queries[model_name][:lines] << comment[:line] if comment
             queries[model_name][:count] += 1

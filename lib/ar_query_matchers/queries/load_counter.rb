@@ -2,6 +2,7 @@
 
 require_relative './query_counter'
 require_relative './table_name'
+require_relative './model_name'
 require_relative './query_filter'
 
 module ArQueryMatchers
@@ -14,15 +15,24 @@ module ArQueryMatchers
       end
 
       class LoadQueryFilter < Queries::QueryFilter
-        # Matches unnamed SQL operations like the following:
-        # "SELECT * FROM `users` ..."
-        MODEL_SQL_PATTERN = /SELECT (?:(?!SELECT).)* FROM [`"](?<table_name>[^`"]+)[`"]/.freeze
+        # Matches named SQL operations like the following:
+        # 'User Load'
+        MODEL_LOAD_PATTERN = /\A(?<model_name>[\w:]+) (Load|Exists)\Z/.freeze
 
-        def filter_map(_name, sql)
-          # Pattern-matching on the table name in a SELECT ... FROM and looking
+        # Matches unnamed SQL operations like the following:
+        # "SELECT COUNT(*) FROM `users` ..."
+        MODEL_SQL_PATTERN = /SELECT .* FROM [`"](?<table_name>[^`"]+)[`"]/.freeze
+
+        def filter_map(name, sql)
+          # First check for a `SELECT * FROM` query that ActiveRecord has
+          # helpfully named for us in the payload
+          match = name.match(MODEL_LOAD_PATTERN)
+          return ModelName.new(match[:model_name]) if match
+
+          # Fall back to pattern-matching on the table name in a COUNT and looking
           # up the table name from ActiveRecord's loaded descendants.
-          selects_from_table = sql.scan(MODEL_SQL_PATTERN)
-          selects_from_table.map { |(table_name)| TableName.new(table_name) } unless selects_from_table.empty?
+          select_from_table = sql.match(MODEL_SQL_PATTERN)
+          TableName.new(select_from_table[:table_name]) if select_from_table
         end
       end
     end
