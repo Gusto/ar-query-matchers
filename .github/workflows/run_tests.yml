@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         ruby: [2.7.x]
-        appraisal: ["rails-5", "rails-6"]
+        appraisal: ["rails-5", "rails-6", "rails-7"]
     steps:
     - uses: actions/checkout@v1
     - name: Setup System
