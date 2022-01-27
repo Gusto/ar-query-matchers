@@ -97,6 +97,42 @@ module ArQueryMatchers
         end
       end
 
+      # The following will fail because the call to `User` is not expected, even
+      # though the Payroll count is correct:
+      #
+      #    expect {
+      #       Payroll.count
+      #       Payroll.count
+      #       User.count
+      #    }.to only_load_at_most_models(
+      #       'Payroll' => 2,
+      #    )
+      #
+      # The following will succeed because the counts are exact:
+      #
+      #    expect {
+      #       Payroll.count
+      #       Payroll.count
+      #       User.count
+      #    }.to only_load_at_most_models(
+      #       'Payroll' => 2,
+      #       'User' => 1,
+      #    )
+      #
+      RSpec::Matchers.define(:only_load_at_most_models) do |expected = {}|
+        include MatcherConfiguration
+        include MatcherErrors
+
+        match do |block|
+          @query_stats = Queries::LoadCounter.instrument(&block)
+          Utility.remove_superfluous_expectations(expected) == @query_stats.query_counts
+        end
+
+        def failure_text
+          expectation_failed_message('load')
+        end
+      end
+
       RSpec::Matchers.define(:not_load_any_models) do
         include MatcherConfiguration
         include MatcherErrors

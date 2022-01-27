@@ -167,4 +167,14 @@ RSpec.describe ArQueryMatchers do
       )
     end
   end
+
+  describe 'only_load_at_most_models' do
+    it 'succeeds' do
+      expect do
+        updates(1)
+        loads(5)
+        creates(1)
+      end.to only_load_at_most_models({ 'MockUser' => 5 })
+    end
+  end
 end
