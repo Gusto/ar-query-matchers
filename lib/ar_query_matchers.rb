@@ -136,7 +136,7 @@ module ArQueryMatchers
         end
 
         def failure_text
-          expectation_failed_message('load')
+          expectation_failed_message('load at most')
         end
       end
 
