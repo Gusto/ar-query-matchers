@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2022-01-27
+### Added
+- A new matcher, `only_load_at_most_models`, will do a less-than-or-equal-to (<=) check on model counts. This is a method that makes tests less noisy as performance gets better.
+
 ## [0.6.0] - 2022-01-05
 ### Changed
 - Support Rails 7
