@@ -167,4 +167,48 @@ RSpec.describe ArQueryMatchers do
       )
     end
   end
+
+  describe 'only_load_at_most_models' do
+    it 'succeeds' do
+      expect do
+        updates(1)
+        loads(5)
+        creates(1)
+      end.to only_load_at_most_models({ 'MockUser' => 5 })
+    end
+
+    context 'there are fewer requests for models' do
+      it 'succeeds' do
+        expect do
+          updates(1)
+          loads(4)
+          creates(1)
+        end.to only_load_at_most_models({ 'MockUser' => 5 })
+      end
+    end
+
+    context 'there is no request for something specified' do
+      it 'succeeds' do
+        expect do
+          updates(1)
+          creates(1)
+        end.to only_load_at_most_models({ 'MockUser' => 5 })
+      end
+    end
+
+    context 'there are more requests made' do
+      it 'fails' do
+        expect do
+          expect do
+            updates(1)
+            loads(6)
+            creates(1)
+          end.to only_load_at_most_models({ 'MockUser' => 5 })
+        end.to raise_error(
+          RSpec::Expectations::ExpectationNotMetError,
+          /Expected ActiveRecord to load at most {"MockUser"=>5}, got {"MockUser"=>6}.*Where unexpected queries came from:/m
+        )
+      end
+    end
+  end
 end
