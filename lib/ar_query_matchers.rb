@@ -125,7 +125,14 @@ module ArQueryMatchers
 
         match do |block|
           @query_stats = Queries::LoadCounter.instrument(&block)
-          Utility.remove_superfluous_expectations(expected) == @query_stats.query_counts
+          expected_queries = Utility.remove_superfluous_expectations(expected)
+          actual_queries = @query_stats.query_counts
+
+          all_models = expected_queries.keys | actual_queries.keys
+
+          all_models.each do |model|
+            expect(actual_queries[model] || 0).to be <= expected_queries[model]
+          end
         end
 
         def failure_text

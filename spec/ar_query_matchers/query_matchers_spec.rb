@@ -176,5 +176,17 @@ RSpec.describe ArQueryMatchers do
         creates(1)
       end.to only_load_at_most_models({ 'MockUser' => 5 })
     end
+
+    context 'there are fewer requests for models' do
+      it 'succeeds' do
+        expect do
+          updates(1)
+          loads(4)
+          creates(1)
+        end.to only_load_at_most_models({ 'MockUser' => 5 })
+      end
+    end
+
+    context 'there is no request for something specified'
   end
 end
