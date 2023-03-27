@@ -40,9 +40,10 @@ This gem defines a few categories of matchers:
 - **Update**: Which models are updated during a block
 
 Each matcher category includes 3 assertions, for example, for the Load category, you could use the following assertions:
-- **only_load_models**: Strict assertion, not other query is allowed.
+- **only_load_models**: Strict assertion of both models loaded and query counts. No other query is allowed.
+- **only_load_at_most_models**: Strict assertion of models loaded, with an upper bound on the number of queries allowed against each.
 - **not_load_models**: No models are allowed to be loaded.
-- **load_models**: Inclusion, other models are allowed to be loaded if not specified in the assertion.
+- **load_models**: Inclusion. Other models are allowed to be loaded if not specified in the assertion.
 
 
 **For example:** 
@@ -52,6 +53,17 @@ load User records (and 1 for Address, 1 for Payroll) _and_ no other models
 perform any SELECT queries.
 ```ruby
 expect { some_code() }.to only_load_models(
+  'User' => 4,
+  'Address' => 1,
+  'Payroll' => 1,
+)
+```
+
+The following spec will pass only if there are 4 or less SQL SELECTs that
+load User records (and 1 or less for both Address and Payroll respectively) _and_ no other models
+perform any SELECT queries.
+```ruby
+expect { some_code() }.to only_load_at_most_models(
   'User' => 4,
   'Address' => 1,
   'Payroll' => 1,
