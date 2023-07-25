@@ -31,9 +31,9 @@ module ArQueryMatchers
         # { 'users' => [User, AtoUser],
         #   'employees => [Employee, PandaFlows::StateFields] }
 
-        # Of all the models that share the same table name sort them by their
-        # relative ancestry and pick the one that all the rest inherit from
-        tables[table_name].min_by { |a, b| a.ancestors.include?(b) }
+        # Pick the class with the shortest distance to the table name
+        ideal_class_name = table_name.classify
+        tables[table_name].min_by { |a| DidYouMean::Levenshtein.distance(ideal_class_name, a.to_s) }
       end
     end
   end
