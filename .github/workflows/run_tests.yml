@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [2.7.x]
+        ruby: [2.7.x, 3.2.x]
         appraisal: ["rails-5", "rails-6", "rails-7"]
     steps:
     - uses: actions/checkout@v1
