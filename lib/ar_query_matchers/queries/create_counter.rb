@@ -17,7 +17,7 @@ module ArQueryMatchers
       class CreateQueryFilter < QueryFilter
         # Matches unnamed SQL operations like the following:
         # "INSERT INTO `company_approval_details` ..."
-        TABLE_NAME_SQL_PATTERN = /INSERT INTO [`"](?<table_name>[^`"]+)[`"]/.freeze
+        TABLE_NAME_SQL_PATTERN = /INSERT INTO [`"](?<table_name>[^`"]+)[`"]/
 
         def filter_map(_name, sql)
           # for inserts, name is always 'SQL', we have to rely on pattern matching the query string.

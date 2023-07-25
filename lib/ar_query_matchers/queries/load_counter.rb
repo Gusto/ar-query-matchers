@@ -17,11 +17,11 @@ module ArQueryMatchers
       class LoadQueryFilter < Queries::QueryFilter
         # Matches named SQL operations like the following:
         # 'User Load'
-        MODEL_LOAD_PATTERN = /\A(?<model_name>[\w:]+) (Load|Exists)\Z/.freeze
+        MODEL_LOAD_PATTERN = /\A(?<model_name>[\w:]+) (Load|Exists)\Z/
 
         # Matches unnamed SQL operations like the following:
         # "SELECT COUNT(*) FROM `users` ..."
-        MODEL_SQL_PATTERN = /SELECT (?:(?!SELECT).)* FROM [`"](?<table_name>[^`"]+)[`"]/.freeze
+        MODEL_SQL_PATTERN = /SELECT (?:(?!SELECT).)* FROM [`"](?<table_name>[^`"]+)[`"]/
 
         def filter_map(name, sql)
           # First check for a `SELECT * FROM` query that ActiveRecord has
