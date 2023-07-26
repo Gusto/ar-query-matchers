@@ -17,7 +17,7 @@ module ArQueryMatchers
       class UpdateQueryFilter < QueryFilter
         # Matches unnamed SQL operations like the following:
         # "UPDATE `bank_account_verifications` ..."
-        TABLE_NAME_SQL_PATTERN = /UPDATE [`"](?<table_name>[^`"]+)[`"]/.freeze
+        TABLE_NAME_SQL_PATTERN = /UPDATE [`"](?<table_name>[^`"]+)[`"]/
 
         def filter_map(_name, sql)
           # for updates, name is always 'SQL', we have to rely on pattern matching on the query string instead.

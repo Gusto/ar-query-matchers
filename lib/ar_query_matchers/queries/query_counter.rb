@@ -71,7 +71,7 @@ module ArQueryMatchers
 
       # The 'marginalia' gem adds a line from the backtrace to the SQL query in
       # the form of a comment.
-      MARGINALIA_SQL_COMMENT_PATTERN = %r{/*line:(?<line>.*)'*/}.freeze
+      MARGINALIA_SQL_COMMENT_PATTERN = %r{/*line:(?<line>.*)'*/}
       private_constant :MARGINALIA_SQL_COMMENT_PATTERN
 
       def to_proc(queries)
