@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
-    - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
+    - name: Set up Ruby 3.2
+      uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.6.x
+        ruby-version: '3.2'
 
     - name: Publish to RubyGems
       run: |
