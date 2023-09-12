@@ -42,7 +42,7 @@ This gem defines a few categories of matchers:
 Each matcher category includes 3 assertions, for example, for the Load category, you could use the following assertions:
 - **only_load_models**: Strict assertion of both models loaded and query counts. No other query is allowed.
 - **only_load_at_most_models**: Strict assertion of models loaded, with an upper bound on the number of queries allowed against each.
-- **not_load_models**: No models are allowed to be loaded.
+- **not_load_any_models**: No models are allowed to be loaded.
 - **load_models**: Inclusion. Other models are allowed to be loaded if not specified in the assertion.
 
 
@@ -72,7 +72,7 @@ expect { some_code() }.to only_load_at_most_models(
 
 The following spec will pass only if there are no select queries.
 ```ruby
-expect { some_code() }.to not_load_models
+expect { some_code() }.to not_load_any_models
 ```
 
 The following spec will pass only if there are exactly 4 SQL SELECTs that
