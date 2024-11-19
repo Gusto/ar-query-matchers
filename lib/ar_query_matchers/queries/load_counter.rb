@@ -17,7 +17,7 @@ module ArQueryMatchers
       class LoadQueryFilter < Queries::QueryFilter
         # Matches named SQL operations like the following:
         # 'User Load'
-        MODEL_LOAD_PATTERN = /\A(?<model_name>[\w:]+) (Load|Exists)\Z/
+        MODEL_LOAD_PATTERN = /\A(?<field_name>[\w:]+)/
 
         # Matches unnamed SQL operations like the following:
         # "SELECT COUNT(*) FROM `users` ..."
