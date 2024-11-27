@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.7', '3.2']
+        ruby: ['2.7', '3.2', '3.3']
         appraisal: ["rails-6", "rails-7"]
     steps:
     - uses: actions/checkout@v1
@@ -19,7 +19,15 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
-    - name: Build and test with Rake
+    - name: Build and test with Rake (Ruby 2.7 only)
+      if: ${{ matrix.ruby == '2.7' }}
+      run: |
+        gem install bundler -v 2.4.22
+        bundle install --jobs 4 --retry 3
+        bundle exec appraisal install
+        bundle exec appraisal ${{ matrix.appraisal }} rake
+    - name: Build and test with Rake (Ruby 3.2+ only)
+      if: ${{ matrix.ruby != '2.7' }}
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
