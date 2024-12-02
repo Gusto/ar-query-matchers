@@ -5,8 +5,7 @@ module ArQueryMatchers
     # An instance of this class is one of the values that could be returned from the QueryFilter#filter_map.
     # its accepts a name of an ActiveRecord model, for example: 'Company'.
     class FieldName
-      attr_reader(:model_name)
-      attr_reader(:model_value)
+      attr_reader(:model_name, :model_value)
 
       def initialize(model_name, model_value)
         @model_name = model_name
