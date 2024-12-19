@@ -27,7 +27,7 @@ module ArQueryMatchers
           # First check for a `SELECT * FROM` query that ActiveRecord has
           # helpfully named for us in the payload
           match = name.match(MODEL_LOAD_PATTERN)
-          return ModelName.new(match[:model_name]) if match and match.names.include? :model_name
+          return ModelName.new(match[:model_name]) if match&.names&.include? :model_name
 
           # Fall back to pattern-matching on the table name in a COUNT and looking
           # up the table name from ActiveRecord's loaded descendants.
