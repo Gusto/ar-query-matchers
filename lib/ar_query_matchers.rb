@@ -349,7 +349,7 @@ module ArQueryMatchers
         end
       end
 
-      def filter_model_names(expected, subset, values_only)
+      def filter_model_names(subset, values_only)
         all_model_names = expected.keys + @query_stats.queries.keys
         if values_only
           all_model_names.reject { |key| reject_record(subset, expected, key) }.uniq
@@ -359,10 +359,9 @@ module ArQueryMatchers
       end
 
       def expectation_failed_message(crud_operation, values_only: false, subset: false)
-        if values_only
-          expected = expected.transform_values { |v| v.is_a(Array) ? v : [v] }
-        end
-        model_names_with_wrong_count = filter_model_names(expected, subset, values_only)
+        expected.transform_values { |v| v.is_a(Array) ? v : [v] } if values_only
+
+        model_names_with_wrong_count = filter_model_names(subset, values_only)
         "Expected ActiveRecord to #{crud_operation} #{expected}, got #{values_only ? @query_stats.query_values : @query_stats.query_counts}\n"\
           "Expectations that differed:\n#{difference(model_names_with_wrong_count, values_only: values_only).join("\n")}\n\nWhere unexpected queries came from:\n\n#{source_lines(model_names_with_wrong_count).join("\n")}"
       end

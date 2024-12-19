@@ -82,7 +82,7 @@ module ArQueryMatchers
       MARGINALIA_SQL_COMMENT_PATTERN = %r{/*line:(?<line>.*)'*/}
       private_constant :MARGINALIA_SQL_COMMENT_PATTERN
 
-      def add_to_query(queries, payload, model_obj, finish, start)
+      def add_to_query(queries, model_name, payload, model_obj, finish, start)
         comment = payload[:sql].match(MARGINALIA_SQL_COMMENT_PATTERN)
         queries[model_name][:lines] << comment[:line] if comment
         queries[model_name][:count] += 1
@@ -100,7 +100,7 @@ module ArQueryMatchers
           model_obj = @query_filter.filter_map(payload[:name] || '', payload[:sql] || '')
           model_name = model_obj&.model_name
 
-          add_to_query(queries, payload, model_obj, finish, start) if model_name
+          add_to_query(queries, model_name, payload, model_obj, finish, start) if model_name
         end
       end
     end
