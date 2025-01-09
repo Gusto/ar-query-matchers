@@ -3,6 +3,7 @@
 require 'ar_query_matchers/queries/create_counter'
 require 'ar_query_matchers/queries/load_counter'
 require 'ar_query_matchers/queries/update_counter'
+require 'ar_query_matchers/queries/destroy_counter'
 require 'bigdecimal'
 
 module ArQueryMatchers
@@ -221,6 +222,50 @@ module ArQueryMatchers
 
         def failure_text
           no_queries_fail_message('update')
+        end
+      end
+    end
+
+    class DestroyModels
+      # The following will succeed:
+      #
+      #    expect {
+      #       WcRiskClass.last.delete
+      #    }.to only_destroy_models(
+      #       'WcRiskClass' => 1,
+      #    )
+      #
+      RSpec::Matchers.define(:only_destroy_models) do |expected = {}|
+        include MatcherConfiguration
+        include MatcherErrors
+
+        match do |block|
+          @query_stats = Queries::UpdateCounter.instrument(&block)
+          Utility.remove_superfluous_expectations(expected) == @query_stats.query_counts
+        end
+
+        def failure_text
+          expectation_failed_message('destroy')
+        end
+      end
+
+      # The following will not succeed because the code destroys models:
+      #
+      #    expect {
+      #       WcRiskClass.last.delete
+      #    }.to not_destroy_any_models
+      #
+      RSpec::Matchers.define(:not_destroy_any_models) do
+        include MatcherConfiguration
+        include MatcherErrors
+
+        match do |block|
+          @query_stats = Queries::UpdateCounter.instrument(&block)
+          @query_stats.query_counts.empty?
+        end
+
+        def failure_text
+          no_queries_fail_message('destroy')
         end
       end
     end

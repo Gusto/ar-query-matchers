@@ -22,7 +22,7 @@ RSpec.shared_context('mock_data_model') do
         'MockUser'
       end
 
-      has_many :mock_posts
+      has_many :mock_posts, dependent: :destroy
     end
   end
 
