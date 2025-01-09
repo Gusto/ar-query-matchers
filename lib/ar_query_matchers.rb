@@ -230,7 +230,7 @@ module ArQueryMatchers
       # The following will succeed:
       #
       #    expect {
-      #       WcRiskClass.last.update_attributes(id: 9999)
+      #       WcRiskClass.last.delete
       #    }.to only_destroy_models(
       #       'WcRiskClass' => 1,
       #    )
@@ -252,7 +252,7 @@ module ArQueryMatchers
       # The following will not succeed because the code destroys models:
       #
       #    expect {
-      #       WcRiskClass.last.destroy_attributes(id: 9999)
+      #       WcRiskClass.last.delete
       #    }.to not_destroy_any_models
       #
       RSpec::Matchers.define(:not_destroy_any_models) do
