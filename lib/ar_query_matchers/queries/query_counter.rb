@@ -44,6 +44,14 @@ module ArQueryMatchers
           Hash[*queries.reduce({}) { |acc, (model_name, data)| acc.update model_name => data[:count] }.sort_by(&:first).flatten]
         end
 
+        def query_values
+          result = {}
+          queries.each do |model_name, data|
+            result[model_name] = data[:values]
+          end
+          result
+        end
+
         # @return [Hash] of line in the source code to its frequency
         def query_lines_by_frequency
           queries.reduce({}) do |lines, (model_name, data)|
@@ -62,7 +70,7 @@ module ArQueryMatchers
       # @param [block] block to instrument
       # @return [QueryStats] stats about all the SQL queries executed during the block
       def instrument(&block)
-        queries = Hash.new { |h, k| h[k] = { count: 0, lines: [], time: BigDecimal(0) } }
+        queries = Hash.new { |h, k| h[k] = { count: 0, lines: [], values: [], time: BigDecimal(0) } }
         ActiveSupport::Notifications.subscribed(to_proc(queries), 'sql.active_record', &block)
         QueryStats.new(queries)
       end
@@ -74,6 +82,15 @@ module ArQueryMatchers
       MARGINALIA_SQL_COMMENT_PATTERN = %r{/*line:(?<line>.*)'*/}
       private_constant :MARGINALIA_SQL_COMMENT_PATTERN
 
+      def add_to_query(queries, payload, model_obj, finish, start)
+        model_name = model_obj&.model_name
+        comment = payload[:sql].match(MARGINALIA_SQL_COMMENT_PATTERN)
+        queries[model_name][:lines] << comment[:line] if comment
+        queries[model_name][:count] += 1
+        queries[model_name][:values].append(model_obj&.model_value) if model_obj.respond_to?(:model_value) && !queries[model_name][:values].include?(model_obj&.model_value)
+        queries[model_name][:time] += (finish - start).round(6) # Round to microseconds
+      end
+
       def to_proc(queries)
         lambda do |_name, start, finish, _message_id, payload|
           return if payload[:cached]
@@ -81,14 +98,10 @@ module ArQueryMatchers
           # Given a `sql.active_record` event, figure out which model is being
           # accessed. Some of the simpler queries have a :name key that makes this
           # really easy. Others require parsing the SQL by hand.
-          model_name = @query_filter.filter_map(payload[:name] || '', payload[:sql] || '')&.model_name
+          model_obj = @query_filter.filter_map(payload[:name] || '', payload[:sql] || '')
+          model_name = model_obj&.model_name
 
-          if model_name
-            comment = payload[:sql].match(MARGINALIA_SQL_COMMENT_PATTERN)
-            queries[model_name][:lines] << comment[:line] if comment
-            queries[model_name][:count] += 1
-            queries[model_name][:time] += (finish - start).round(6) # Round to microseconds
-          end
+          add_to_query(queries, payload, model_obj, finish, start) if model_name
         end
       end
     end
