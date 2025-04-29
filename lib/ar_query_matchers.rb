@@ -403,7 +403,7 @@ module ArQueryMatchers
         model_names_with_wrong_count = filter_model_names(subset, show_values, ignore_missing)
         message = "Expected ActiveRecord to #{crud_operation} #{expected}, got #{show_values ? @query_stats.query_values : @query_stats.query_counts}\n"
         message += "Expectations that differed:\n#{difference(model_names_with_wrong_count, show_values: show_values).join("\n")}" if show_values
-        message += "\n\nWhere unexpected queries came from:\n\n#{source_lines(model_names_with_wrong_count).join("\n")}"
+        message + "\n\nWhere unexpected queries came from:\n\n#{source_lines(model_names_with_wrong_count).join("\n")}"
       end
     end
   end
