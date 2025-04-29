@@ -87,7 +87,7 @@ module ArQueryMatchers
         comment = payload[:sql].match(MARGINALIA_SQL_COMMENT_PATTERN)
         queries[model_name][:lines] << comment[:line] if comment
         queries[model_name][:count] += 1
-        queries[model_name][:values].append(model_obj&.model_value) if model_obj.respond_to?(:model_value) and !queries[model_name][:values].include?(model_obj&.model_value)
+        queries[model_name][:values].append(model_obj&.model_value) if model_obj.respond_to?(:model_value) && !queries[model_name][:values].include?(model_obj&.model_value)
         queries[model_name][:time] += (finish - start).round(6) # Round to microseconds
       end
 

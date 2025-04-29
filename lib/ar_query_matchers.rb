@@ -329,25 +329,14 @@ module ArQueryMatchers
     module MatcherErrors
       def create_display_string(max_key_length, key, left, right, show_values)
         diff_array = right - left
-        if diff_array.empty?
-          diff_array = left - right
-        end
+        diff_array = left - right if diff_array.empty?
         "#{key.rjust(max_key_length, ' ')} – expected: #{left}, got: #{right} #{"(difference: #{diff_array})" if show_values}"
       end
 
-      # Show the difference between expected and actual values with one value
-      # per line. This is done by hand because as of this writing the author
-      # doesn't understand how RSpec does its nice hash diff printing.
-      def difference(keys, show_values: false)
+      def loop_through_keys(keys, transformed_expected, show_values)
         max_key_length = keys.reduce(0) { |max, key| [max, key.size].max }
-
-        _expected = expected
-        if show_values
-          _expected = expected.transform_values { |v| v.is_a?(Array) ? v : [v] }
-        end
-
         keys.map do |key|
-          left = _expected.fetch(key, show_values ? [] : 0)
+          left = transformed_expected.fetch(key, show_values ? [] : 0)
           left = [left] unless left.is_a?(Array) || show_values
 
           right = @query_stats.queries.fetch(key, {})
@@ -355,6 +344,18 @@ module ArQueryMatchers
 
           create_display_string(max_key_length, key, left, right, show_values)
         end.compact
+      end
+
+      # Show the difference between expected and actual values with one value
+      # per line. This is done by hand because as of this writing the author
+      # doesn't understand how RSpec does its nice hash diff printing.
+      def difference(keys, show_values: false)
+        transformed_expected = expected
+        if show_values
+          transformed_expected = expected.transform_values { |v| v.is_a?(Array) ? v : [v] }
+        end
+
+        loop_through_keys keys, transformed_expected, show_values
       end
 
       def source_lines(keys)
@@ -391,8 +392,8 @@ module ArQueryMatchers
       def filter_model_names(subset, show_values, ignore_missing)
         all_model_names = expected.keys + @query_stats.queries.keys
         if show_values
-          _expected = expected.transform_values { |v| v.is_a?(Array) ? v : [v] }
-          all_model_names.reject { |key| reject_record(subset, _expected, key, ignore_missing) }.uniq
+          transformed_expected = expected.transform_values { |v| v.is_a?(Array) ? v : [v] }
+          all_model_names.reject { |key| reject_record(subset, transformed_expected, key, ignore_missing) }.uniq
         else
           all_model_names.reject { |key| expected[key] == @query_stats.queries[key][:count] }.uniq
         end
