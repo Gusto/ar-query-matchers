@@ -249,7 +249,7 @@ module ArQueryMatchers
         end
 
         def failure_text
-          expectation_failed_message('query_by', true)
+          expectation_failed_message('query_by', show_values: true)
         end
       end
 
@@ -267,15 +267,41 @@ module ArQueryMatchers
         include MatcherErrors
 
         # Convert the map of expected values to a Hash of all arrays
-        temp_expected = expected.transform_values { |v| v.is_a?(Array) ? v : [v] }
+        expected = expected.transform_values { |v| v.is_a?(Array) ? v : [v] }
 
         match do |block|
           @query_stats = Queries::FieldCounter.instrument(&block)
-          temp_expected == @query_stats.query_values.select { |k, _| temp_expected.keys.include?(k) }
+          expected == @query_stats.query_values.select { |k, _| expected.keys.include?(k) }
         end
 
         def failure_text
-          expectation_failed_message('query_by', true, true)
+          expectation_failed_message('query_by', show_values: true, subset: true)
+        end
+      end
+
+      # The following will succeed:
+      #
+      #    expect {
+      #       WcRiskClass.last.update_attributes(id: 9999)
+      #       WcRiskClass.last.update_attributes(id: 1234)
+      #    }.to query_by_field_at_least_ignore_notfound(
+      #       'id' => 6666,
+      #    )
+      #
+      RSpec::Matchers.define(:query_by_field_at_least_ignore_notfound) do |expected = {}|
+        include MatcherConfiguration
+        include MatcherErrors
+
+        # Convert the map of expected values to a Hash of all arrays
+        expected = expected.transform_values { |v| v.is_a?(Array) ? v : [v] }
+
+        match do |block|
+          @query_stats = Queries::FieldCounter.instrument(&block)
+          expected.select { |k, _| @query_stats.query_values.keys.include?(k) } == @query_stats.query_values.select { |k, _| expected.keys.include?(k) }
+        end
+
+        def failure_text
+          expectation_failed_message('query_by', show_values: true, subset: true, ignore_missing: true)
         end
       end
     end
@@ -301,24 +327,33 @@ module ArQueryMatchers
     end
 
     module MatcherErrors
-      def create_display_string(max_key_length, key, left, right, values_only)
-        "#{key.rjust(max_key_length, ' ')} – expected: #{left}, got: #{right} #{"(#{'+' if right > left}#{right - left})" if values_only}"
+      def create_display_string(max_key_length, key, left, right, show_values)
+        diff_array = right - left
+        if diff_array.empty?
+          diff_array = left - right
+        end
+        "#{key.rjust(max_key_length, ' ')} – expected: #{left}, got: #{right} #{"(difference: #{diff_array})" if show_values}"
       end
 
       # Show the difference between expected and actual values with one value
       # per line. This is done by hand because as of this writing the author
       # doesn't understand how RSpec does its nice hash diff printing.
-      def difference(keys, values_only: false)
+      def difference(keys, show_values: false)
         max_key_length = keys.reduce(0) { |max, key| [max, key.size].max }
 
+        _expected = expected
+        if show_values
+          _expected = expected.transform_values { |v| v.is_a?(Array) ? v : [v] }
+        end
+
         keys.map do |key|
-          left = expected.fetch(key, values_only ? [] : 0)
-          left = [left] unless left.is_a?(Array) || !values_only
+          left = _expected.fetch(key, show_values ? [] : 0)
+          left = [left] unless left.is_a?(Array) || show_values
 
           right = @query_stats.queries.fetch(key, {})
-          right = values_only ? right.fetch(:values, []) : right.fetch(:count, 0)
+          right = show_values ? right.fetch(:values, []) : right.fetch(:count, 0)
 
-          create_display_string(max_key_length, key, left, right, values_only)
+          create_display_string(max_key_length, key, left, right, show_values)
         end.compact
       end
 
@@ -341,29 +376,32 @@ module ArQueryMatchers
         "Expected ActiveRecord to not #{crud_operation} any records, got #{@query_stats.query_counts}\n\nWhere unexpected queries came from:\n\n#{source_lines(@query_stats.query_counts.keys).join("\n")}"
       end
 
-      def reject_record(subset, expected, key)
-        if subset && !expected[key].nil?
-          (expected[key] - @query_stats.queries[key][:values]).empty?
+      def reject_record(subset, current_expected, key, ignore_missing)
+        if subset && !current_expected[key].nil?
+          if ignore_missing
+            @query_stats.queries[key][:values].empty? || (current_expected[key] - @query_stats.queries[key][:values]).empty?
+          else
+            (current_expected[key] - @query_stats.queries[key][:values]).empty?
+          end
         else
-          @query_stats.queries[key][:values] == expected[key]
+          ignore_missing || @query_stats.queries[key][:values] == current_expected[key]
         end
       end
 
-      def filter_model_names(subset, values_only)
+      def filter_model_names(subset, show_values, ignore_missing)
         all_model_names = expected.keys + @query_stats.queries.keys
-        if values_only
-          all_model_names.reject { |key| reject_record(subset, expected, key) }.uniq
+        if show_values
+          _expected = expected.transform_values { |v| v.is_a?(Array) ? v : [v] }
+          all_model_names.reject { |key| reject_record(subset, _expected, key, ignore_missing) }.uniq
         else
           all_model_names.reject { |key| expected[key] == @query_stats.queries[key][:count] }.uniq
         end
       end
 
-      def expectation_failed_message(crud_operation, values_only: false, subset: false)
-        expected.transform_values { |v| v.is_a(Array) ? v : [v] } if values_only
-
-        model_names_with_wrong_count = filter_model_names(subset, values_only)
-        "Expected ActiveRecord to #{crud_operation} #{expected}, got #{values_only ? @query_stats.query_values : @query_stats.query_counts}\n"\
-          "Expectations that differed:\n#{difference(model_names_with_wrong_count, values_only: values_only).join("\n")}\n\nWhere unexpected queries came from:\n\n#{source_lines(model_names_with_wrong_count).join("\n")}"
+      def expectation_failed_message(crud_operation, show_values: false, subset: false, ignore_missing: false)
+        model_names_with_wrong_count = filter_model_names(subset, show_values, ignore_missing)
+        "Expected ActiveRecord to #{crud_operation} #{expected}, got #{show_values ? @query_stats.query_values : @query_stats.query_counts}\n"\
+          "Expectations that differed:\n#{difference(model_names_with_wrong_count, show_values: show_values).join("\n")}\n\nWhere unexpected queries came from:\n\n#{source_lines(model_names_with_wrong_count).join("\n")}"
       end
     end
   end

@@ -40,6 +40,7 @@ module ArQueryMatchers
           #   - Anything with `, field,` in an INSERT (we need to check the values)
           select_field_query = sql.match(MODEL_FIELDS_PATTERN)
           # debugger if sql.match(/INSERT/)
+          # TODO: MODEL_FIELDS_IN_PATTERN and MODEL_INSERT_PATTERN need to be handled
 
           FieldName.new(select_field_query[:field_name], cleanup(select_field_query[:field_value])) if select_field_query
         end
