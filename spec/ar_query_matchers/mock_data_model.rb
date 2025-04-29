@@ -3,6 +3,7 @@
 # @mission Infrastructure
 # @team DEx
 
+require 'logger'
 require 'active_record'
 
 RSpec.shared_context('mock_data_model') do
