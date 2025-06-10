@@ -10,7 +10,7 @@ jobs:
         ruby: ['3.2', '3.3']
         appraisal: ["rails-6", "rails-7"]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     - name: Setup System
       run: |
         sudo apt-get update
