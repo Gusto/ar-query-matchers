@@ -9,21 +9,23 @@ jobs:
   build:
     name: Build + Publish
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
 
     steps:
     - uses: actions/checkout@master
+    - name: Authenticate with Cloudsmith via OIDC
+      uses: cloudsmith-io/cloudsmith-cli-action@v2
+      with:
+        oidc-namespace: "gusto"
+        oidc-service-slug: "gusto-cloudsmith-write-svc-01"
+        oidc-auth-only: "true"
     - name: Set up Ruby 3.2
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.2'
 
-    - name: Publish to RubyGems
+    - name: Publish to Cloudsmith
       run: |
-        mkdir -p $HOME/.gem
-        touch $HOME/.gem/credentials
-        chmod 0600 $HOME/.gem/credentials
-        printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
         gem build *.gemspec
-        gem push *.gem
-      env:
-        GEM_HOST_API_KEY: ${{secrets.RUBYGEMS_AUTH_TOKEN}}
+        GEM_HOST_API_KEY="Bearer ${CLOUDSMITH_API_KEY}" gem push *.gem --host https://cloudsmith.io/gusto/gusto
