@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Failure messages no longer under-report which keys differed, and no longer list keys that were never queried. `MatcherErrors` read the query-stats Hash by direct indexing, but that Hash is built with a default block that *assigns* on lookup, so building the message inserted zero-valued entries for expected-but-unqueried keys. Separately, the `ignore_missing` path (`query_by_field_at_least_ignore_notfound`) treated a key with an empty recorded value array as absent, suppressing it from the diff even though the matcher counted it as a mismatch.
 
 ## [0.8.0] - 2022-01-27
 ### Added

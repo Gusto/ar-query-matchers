@@ -377,15 +377,29 @@ module ArQueryMatchers
         "Expected ActiveRecord to not #{crud_operation} any records, got #{@query_stats.query_counts}\n\nWhere unexpected queries came from:\n\n#{source_lines(@query_stats.query_counts.keys).join("\n")}"
       end
 
+      # Reads a key's recorded stats without touching @query_stats.queries directly. That Hash is
+      # built with a default block that *assigns* on lookup, so indexing it for a key that was never
+      # queried inserts a zero-valued entry — which then shows up in the failure message's "got" list
+      # as a query that never happened.
+      def recorded(key)
+        @query_stats.queries.fetch(key, { count: 0, lines: [], values: [], time: 0 })
+      end
+
+      def queried?(key)
+        @query_stats.queries.key?(key)
+      end
+
       def reject_record(subset, current_expected, key, ignore_missing)
         if subset && !current_expected[key].nil?
           if ignore_missing
-            @query_stats.queries[key][:values].empty? || (current_expected[key] - @query_stats.queries[key][:values]).empty?
+            # Only a key that was never queried is ignorable. A key that *was* queried but whose
+            # recorded values are empty still fails the match, so it has to stay in the diff.
+            !queried?(key) || (current_expected[key] - recorded(key)[:values]).empty?
           else
-            (current_expected[key] - @query_stats.queries[key][:values]).empty?
+            (current_expected[key] - recorded(key)[:values]).empty?
           end
         else
-          ignore_missing || @query_stats.queries[key][:values] == current_expected[key]
+          ignore_missing || recorded(key)[:values] == current_expected[key]
         end
       end
 
@@ -395,7 +409,7 @@ module ArQueryMatchers
           transformed_expected = expected.transform_values { |v| v.is_a?(Array) ? v : [v] }
           all_model_names.reject { |key| reject_record(subset, transformed_expected, key, ignore_missing) }.uniq
         else
-          all_model_names.reject { |key| expected[key] == @query_stats.queries[key][:count] }.uniq
+          all_model_names.reject { |key| expected[key] == recorded(key)[:count] }.uniq
         end
       end
 
